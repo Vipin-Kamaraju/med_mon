@@ -11,13 +11,18 @@ RUN apt-get update && apt-get install -y \
     qtbase5-dev \
     qtdeclarative5-dev \
     build-essential \
+    python3-pyqt5 \
+    python3-pyqt5.qtchart \
+    python3-pyqt5.qtsvg \
+    python3-pyqt5.qtquick \
+    python3-pyqt5.qtopengl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install sip before installing PyQt5
 RUN pip install sip
 
 COPY ./requirements.txt /setup
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./entrypoint.sh /setup
 RUN chmod +x /setup/entrypoint.sh
