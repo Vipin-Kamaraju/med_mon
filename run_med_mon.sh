@@ -1,6 +1,6 @@
 #!/bin/bash
 
-xhost +local: # Allows the container to connect to the X server
+xhost +local:docker # Allows the container to connect to the X server
 
 REPO_DIR=$(dirname "$(realpath "$0")")
 

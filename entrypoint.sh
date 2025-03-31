@@ -1,5 +1,8 @@
 #!/bin/bash
 
+export ROS_MASTER_URI=http://localhost:11311
+export ROS_HOSTNAME=localhost
+
 # Set the XDG_RUNTIME_DIR environment variable
 export XDG_RUNTIME_DIR=/tmp/runtime-root
 mkdir -p $XDG_RUNTIME_DIR
