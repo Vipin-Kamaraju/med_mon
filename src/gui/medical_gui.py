@@ -14,11 +14,16 @@ class MedicalGUI(QObject):
     def __init__(self):
         super().__init__()
 
+        print("[GUI INIT] Setting up ROS subscribers...")
+
         rospy.Subscriber('/heart_rate', Int32, self.update_heart_rate)
         rospy.Subscriber('/blood_pressure', Float32, self.update_blood_pressure)
-        rospy.Subscriber('/ekg_filtered', Float32, self.update_ekg)
+        rospy.Subscriber('/ekg', Float32, self.update_ekg)
+        # rospy.Subscriber('/ekg_filtered', Float32, self.update_ekg)
 
-        self.filter_control_pub = rospy.Publisher('/ekg_filter_enable', Float32, queue_size=10)
+        # self.filter_control_pub = rospy.Publisher('/ekg_filter_enable', Float32, queue_size=10)
+
+        print("[GUI INIT] Subscribers set.")
 
     @pyqtSlot(Int32)
     def update_heart_rate(self, msg):
@@ -35,11 +40,11 @@ class MedicalGUI(QObject):
         print(f"Emitting EKG data: {msg.data}")  # Debugging statement
         self.ekgChanged.emit(float(msg.data))
 
-    @pyqtSlot(bool)
-    def toggle_filter(self, enabled):
-        # Called from QML checkbox
-        rospy.loginfo(f"GUI filter toggle: {'enabled' if enabled else 'disabled'}")
-        self.filter_control_pub.publish(1.0 if enabled else 0.0)
+    # @pyqtSlot(bool)
+    # def toggle_filter(self, enabled):
+    #     # Called from QML checkbox
+    #     rospy.loginfo(f"GUI filter toggle: {'enabled' if enabled else 'disabled'}")
+    #     self.filter_control_pub.publish(1.0 if enabled else 0.0)
 
 if __name__ == "__main__":
     try:
