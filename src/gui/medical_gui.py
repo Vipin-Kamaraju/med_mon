@@ -1,18 +1,18 @@
 import sys
-from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, QUrl
+import threading
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, QUrl, QTimer
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtQml import QQmlApplicationEngine
 import rospy
 from std_msgs.msg import Int32, Float32
 
 class MedicalGUI(QObject):
-    heartRateChanged = pyqtSignal(str)
-    bloodPressureChanged = pyqtSignal(str)
+    heartRateChanged = pyqtSignal(int)
+    bloodPressureChanged = pyqtSignal(float)
     ekgChanged = pyqtSignal(float)
 
     def __init__(self):
         super().__init__()
-        rospy.init_node('medical_gui', anonymous=True)
 
         rospy.Subscriber('/heart_rate', Int32, self.update_heart_rate)
         rospy.Subscriber('/blood_pressure', Float32, self.update_blood_pressure)
@@ -22,11 +22,13 @@ class MedicalGUI(QObject):
 
     @pyqtSlot(Int32)
     def update_heart_rate(self, msg):
-        self.heartRateChanged.emit(f"Heart Rate: {msg.data} bpm")
+        print(f"[Python] Heart Rate Callback: {msg.data}")
+        self.heartRateChanged.emit(msg.data)
 
     @pyqtSlot(Float32)
     def update_blood_pressure(self, msg):
-        self.bloodPressureChanged.emit(f"Blood Pressure: {msg.data:.1f} mmHg")
+        print(f"[Python] Blood Pressure Callback: {msg.data}")
+        self.bloodPressureChanged.emit(msg.data)
 
     @pyqtSlot(Float32)
     def update_ekg(self, msg):
@@ -52,8 +54,14 @@ if __name__ == "__main__":
 
         engine.load(QUrl('file:///med_mon/src/gui/medical_gui.qml'))
 
+        timer = QTimer()
+        timer.timeout.connect(lambda: None)
+        timer.start(100)
+        
         if not engine.rootObjects():
             sys.exit(-1)
+        
+        threading.Thread(target=rospy.spin, daemon=True).start()
         sys.exit(app.exec_())
     except Exception as e:
         rospy.logerr(f"Exception in main: {e}")

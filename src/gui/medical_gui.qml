@@ -4,8 +4,8 @@ import QtCharts 2
 
 ApplicationWindow {
     visible: true
-    width: 800
-    height: 600
+    width: 1600
+    height: 1200
     title: "Medical Device Dashboard"
 
     property int x: 0
@@ -38,7 +38,7 @@ ApplicationWindow {
         ChartView {
             id: chartView
             width: parent.width
-            height: 300
+            height: 600
             antialiasing: true
 
             ValueAxis {

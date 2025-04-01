@@ -37,4 +37,4 @@ ENTRYPOINT ["/setup/entrypoint.sh"]
 
 WORKDIR /med_mon
 
-CMD ["bash"]
+CMD ["/bin/bash", "-c", "roslaunch launch_files med_mon.launch"]
