@@ -5,11 +5,11 @@ entrypoint.sh -> ROS_Launch: Execute med_mon.launch
 ROS_Launch -> ekg.py: Start EKG publisher node
 ROS_Launch -> medical_sensor.py: Start vitals publisher node
 ROS_Launch -> medical_gui.py: Start PyQt5 GUI node
-ROS_Launch -> ekg_filter.py: Start EKG filtering node
+ROS_Launch -> generic_filter.py: Start EKG filtering node
 
 ekg.py -> /ekg: Publish raw ekg voltage
-ekg_filter.py -> /ekg: Subscribe to raw EKG data
-ekg_filter.py -> /filtered_ekg: Publish filtered EKG data
+generic_filter.py -> /ekg: Subscribe to raw EKG data
+generic_filter.py -> /filtered_ekg: Publish filtered EKG data
 medical_gui.py -> /filtered_ekg: Subscribe to filtered EKG data
 
 medical_sensor.py -> /heart_rate: Publish heart rate
