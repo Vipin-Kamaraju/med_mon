@@ -57,12 +57,15 @@ ApplicationWindow {
     Connections {
         target: gui
         function onHeartRateChanged(heartRate) {
+            logger("Heart Rate Changed: " + heartRate);
             heartRateLabel.text = "Heart Rate: " + heartRate + " bpm";
         }
         function onBloodPressureChanged(bloodPressure) {
+            logger("Blood Pressure Changed: " + bloodPressure);
             bloodPressureLabel.text = "Blood Pressure: " + bloodPressure + " mmHg";
         }
         function onEkgChanged(voltage) {
+            logger("EKG Voltage Changed: " + voltage);
             ekgSeries.append(x, voltage);
             x = (x + 1) % x_width;
 

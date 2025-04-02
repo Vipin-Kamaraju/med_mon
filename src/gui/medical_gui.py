@@ -14,41 +14,48 @@ class MedicalGUI(QObject):
     def __init__(self):
         super().__init__()
 
-        print("[GUI INIT] Setting up ROS subscribers...")
+        rospy.loginfo("[GUI INIT] Setting up ROS subscribers...")
 
         rospy.Subscriber('/heart_rate', Int32, self.update_heart_rate)
+        rospy.loginfo("[ROS] Subscriber for /heart_rate created.")
         rospy.Subscriber('/blood_pressure', Float32, self.update_blood_pressure)
+        rospy.loginfo("[ROS] Subscriber for /blood_pressure created.")
         rospy.Subscriber('/ekg', Float32, self.update_ekg)
         # rospy.Subscriber('/ekg_filtered', Float32, self.update_ekg)
 
         # self.filter_control_pub = rospy.Publisher('/ekg_filter_enable', Float32, queue_size=10)
 
-        print("[GUI INIT] Subscribers set.")
+        rospy.loginfo("[GUI INIT] Subscribers set.")
+
+
+    @pyqtSlot(str)
+    def log_message(self, message):
+        """Logs messages from QML to ROS logs."""
+        rospy.loginfo(f"[QML] {message}")
+
 
     @pyqtSlot(Int32)
     def update_heart_rate(self, msg):
-        print(f"[Python] Heart Rate Callback: {msg.data}")
+        rospy.loginfo(f"[Python] Heart Rate Callback triggered with value: {msg.data}")
+        self.heartRateChanged.connect(lambda value: rospy.loginfo(f"[Debug] Heart Rate Signal Emitted: {value}"))
         self.heartRateChanged.emit(msg.data)
 
     @pyqtSlot(Float32)
     def update_blood_pressure(self, msg):
-        print(f"[Python] Blood Pressure Callback: {msg.data}")
+        rospy.loginfo(f"[Python] Blood Pressure Callback triggered with value: {msg.data}")
+        self.bloodPressureChanged.connect(lambda value: rospy.loginfo(f"[Debug] Blood Pressure Signal Emitted: {value}"))
         self.bloodPressureChanged.emit(msg.data)
 
     @pyqtSlot(Float32)
     def update_ekg(self, msg):
-        print(f"Emitting EKG data: {msg.data}")  # Debugging statement
+        rospy.loginfo(f"[Python] EKG Callback triggered with value: {msg.data}")
+        self.ekgChanged.connect(lambda value: rospy.loginfo(f"[Debug] EKG Signal Emitted: {value}"))
         self.ekgChanged.emit(float(msg.data))
-
-    # @pyqtSlot(bool)
-    # def toggle_filter(self, enabled):
-    #     # Called from QML checkbox
-    #     rospy.loginfo(f"GUI filter toggle: {'enabled' if enabled else 'disabled'}")
-    #     self.filter_control_pub.publish(1.0 if enabled else 0.0)
 
 if __name__ == "__main__":
     try:
-        rospy.init_node('medical_gui', anonymous=True)
+        rospy.init_node('med_mon_gui', anonymous=True, log_level=rospy.DEBUG)
+        rospy.loginfo("[ROS] Node initialized successfully.")
 
         app = QApplication(sys.argv)
         engine = QQmlApplicationEngine()
@@ -56,18 +63,26 @@ if __name__ == "__main__":
         gui = MedicalGUI()
         context = engine.rootContext()
         context.setContextProperty("gui", gui)
+        context.setContextProperty("logger", gui.log_message)  # Expose the logging function
+        rospy.loginfo("[QML] Context property 'gui' and 'logger' set.")
 
         engine.load(QUrl('file:///med_mon/src/gui/medical_gui.qml'))
+        rospy.loginfo("[QML] QML file loaded.")
 
-        timer = QTimer()
-        timer.timeout.connect(lambda: None)
-        timer.start(100)
-        
         if not engine.rootObjects():
+            rospy.logerr("[QML] No root objects found. Exiting.")
             sys.exit(-1)
-        
+
+        # Add a timer to keep the event loop alive and log periodically
+        timer = QTimer()
+        timer.timeout.connect(lambda: rospy.loginfo("[Debug] Timer running."))
+        timer.start(1000)
+
+        rospy.loginfo("[ROS] Starting rospy.spin() in a separate thread.")
         threading.Thread(target=rospy.spin, daemon=True).start()
+
+        rospy.loginfo("[GUI] Starting PyQt application event loop.")
         sys.exit(app.exec_())
     except Exception as e:
-        rospy.logerr(f"Exception in main: {e}")
+        rospy.logerr(f"[Exception] {e}")
         sys.exit(-1)
