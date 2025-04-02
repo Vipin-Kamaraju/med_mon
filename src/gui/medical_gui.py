@@ -36,20 +36,20 @@ class MedicalGUI(QObject):
 
     @pyqtSlot(Int32)
     def update_heart_rate(self, msg):
-        rospy.loginfo(f"[Python] Heart Rate Callback triggered with value: {msg.data}")
-        self.heartRateChanged.connect(lambda value: rospy.loginfo(f"[Debug] Heart Rate Signal Emitted: {value}"))
+        # rospy.loginfo(f"[Python] Heart Rate Callback triggered with value: {msg.data}")
+        # self.heartRateChanged.connect(lambda value: rospy.loginfo(f"[Debug] Heart Rate Signal Emitted: {value}"))
         self.heartRateChanged.emit(msg.data)
 
     @pyqtSlot(Float32)
     def update_blood_pressure(self, msg):
-        rospy.loginfo(f"[Python] Blood Pressure Callback triggered with value: {msg.data}")
-        self.bloodPressureChanged.connect(lambda value: rospy.loginfo(f"[Debug] Blood Pressure Signal Emitted: {value}"))
+        # rospy.loginfo(f"[Python] Blood Pressure Callback triggered with value: {msg.data}")
+        # self.bloodPressureChanged.connect(lambda value: rospy.loginfo(f"[Debug] Blood Pressure Signal Emitted: {value}"))
         self.bloodPressureChanged.emit(msg.data)
 
     @pyqtSlot(Float32)
     def update_ekg(self, msg):
-        rospy.loginfo(f"[Python] EKG Callback triggered with value: {msg.data}")
-        self.ekgChanged.connect(lambda value: rospy.loginfo(f"[Debug] EKG Signal Emitted: {value}"))
+        # rospy.loginfo(f"[Python] EKG Callback triggered with value: {msg.data}")
+        # self.ekgChanged.connect(lambda value: rospy.loginfo(f"[Debug] EKG Signal Emitted: {value}"))
         self.ekgChanged.emit(float(msg.data))
 
 if __name__ == "__main__":
