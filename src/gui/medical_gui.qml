@@ -111,12 +111,12 @@ ApplicationWindow {
         target: gui
         
         onHeartRateChanged: function(heartRate) {
-            console.log("[QML] Received Heart Rate:", heartRate)
+            // console.log("[QML] Received Heart Rate:", heartRate)
             heartRateLabel.text = "Heart Rate: " + heartRate + " bpm"
         }
 
         onBloodPressureChanged: function(bloodPressure) {
-            console.log("[QML] Blood Pressure Changed:", bloodPressure)
+            // console.log("[QML] Blood Pressure Changed:", bloodPressure)
             bloodPressureLabel.text = "Blood Pressure: " + bloodPressure + " mmHg"
         }
 
