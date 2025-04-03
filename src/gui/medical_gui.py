@@ -58,6 +58,7 @@ class MedicalGUI(QObject):
         # Called from QML checkbox
         rospy.loginfo(f"GUI filter toggle: {'enabled' if enabled else 'disabled'}")
         self.filter_control_pub.publish(1.0 if enabled else 0.0)
+        # self.filter_control_pub.publish(0.0)
 
 if __name__ == "__main__":
     try:

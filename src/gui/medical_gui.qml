@@ -17,7 +17,7 @@ ApplicationWindow {
         CheckBox {
             id: filterToggle
             text: "Enable EKG Filter"
-            checked: true
+            checked: false
             onCheckedChanged: {
                 gui.toggle_filter(checked)
             }
