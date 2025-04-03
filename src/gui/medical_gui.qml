@@ -14,21 +14,56 @@ ApplicationWindow {
     Column {
         anchors.centerIn: parent
 
+        CheckBox {
+            id: filterEnabled
+            text: "Enable EKG Filter"
+            checked: false
+            onCheckedChanged: {
+                cutoffSlider.enabled = checked;
+                if (checked) {
+                    gui.update_cutoff(cutoffSlider.value);
+                } else {
+                    gui.update_cutoff(0.0); // Set cutoff to 0 to disable filter
+                }
+            }
+        }
+
         Label {
             id: cutoffLabel
             text: "EKG Filter Cutoff Frequency: " + cutoffSlider.value.toFixed(2)
             font.pointSize: 12
         }
 
-        Slider {
-            id: cutoffSlider
-            from: 0.0  // Minimum cutoff frequency (filter disabled)
-            to: 0.5     // Maximum cutoff frequency (filter enabled)
-            value: 0.25   // Default cutoff frequency (filter disabled)
-            stepSize: 0.01
-            onValueChanged: {
-                gui.update_cutoff(value);
-                cutoffLabel.text = "EKG Filter Cutoff Frequency: " + value.toFixed(2);
+        Row {
+            Button {
+                text: "-"
+                font.pointSize: 20 // Increased font size
+                onClicked: {
+                    cutoffSlider.value = Math.max(cutoffSlider.from, cutoffSlider.value - cutoffSlider.stepSize);
+                    gui.update_cutoff(cutoffSlider.value);
+                }
+            }
+
+            Slider {
+                id: cutoffSlider
+                from: 0.0  // Minimum cutoff frequency (filter disabled)
+                to: 0.3     // Maximum cutoff frequency (filter enabled)
+                value: 0.1   // Default cutoff frequency (filter disabled)
+                stepSize: 0.01
+                enabled: filterEnabled.checked
+                onValueChanged: {
+                    gui.update_cutoff(value);
+                    cutoffLabel.text = "EKG Filter Cutoff Frequency: " + value.toFixed(2);
+                }
+            }
+
+            Button {
+                text: "+"
+                font.pointSize: 20 // Increased font size
+                onClicked: {
+                    cutoffSlider.value = Math.min(cutoffSlider.to, cutoffSlider.value + cutoffSlider.stepSize);
+                    gui.update_cutoff(cutoffSlider.value);
+                }
             }
         }
         
