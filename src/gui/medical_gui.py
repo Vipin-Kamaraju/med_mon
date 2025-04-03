@@ -55,8 +55,8 @@ class MedicalGUI(QObject):
 
 if __name__ == "__main__":
     try:
-        rospy.init_node('medical_gui', anonymous=True, log_level=rospy.DEBUG)
-        rospy.loginfo("[ROS] Node initialized successfully.")
+        # rospy.init_node('medical_gui', anonymous=True, log_level=rospy.DEBUG)
+        # rospy.loginfo("[ROS] Node initialized successfully.")
 
         app = QApplication(sys.argv)
         engine = QQmlApplicationEngine()
