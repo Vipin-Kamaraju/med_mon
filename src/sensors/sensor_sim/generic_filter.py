@@ -12,7 +12,7 @@ class GenericFilterNode:
         self.output_topic = rospy.get_param('~output_topic', '/filtered_signal')
         self.filter_type = rospy.get_param('~filter_type', 'lowpass')
         self.cutoff_frequency = rospy.get_param('~cutoff_frequency', 0.0)
-        self.cutoff_topic = rospy.get_param('~cutoff_topic', '/ekg_filter_cutoff')  # New parameter
+        self.cutoff_topic = rospy.get_param('~cutoff_topic', '/ekg_filter_cutoff')
 
         # Filter settings
         self.enabled = True
@@ -21,7 +21,7 @@ class GenericFilterNode:
         # Publishers and subscribers
         self.filtered_pub = rospy.Publisher(self.output_topic, Float32, queue_size=10)
         self.input_sub = rospy.Subscriber(self.input_topic, Float32, self.filter_callback)
-        self.cutoff_sub = rospy.Subscriber(self.cutoff_topic, Float32, self.update_cutoff_frequency)  # Use the parameter
+        self.cutoff_sub = rospy.Subscriber(self.cutoff_topic, Float32, self.update_cutoff_frequency)
 
         self.prev_data = []
 

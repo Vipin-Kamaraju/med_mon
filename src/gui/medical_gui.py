@@ -20,10 +20,9 @@ class MedicalGUI(QObject):
         rospy.loginfo("[ROS] Subscriber for /heart_rate created.")
         rospy.Subscriber('/blood_pressure', Float32, self.update_blood_pressure)
         rospy.loginfo("[ROS] Subscriber for /blood_pressure created.")
-        # rospy.Subscriber('/ekg', Float32, self.update_ekg)
         rospy.Subscriber('/ekg_filtered', Float32, self.update_ekg)
 
-        self.cutoff_topic = rospy.get_param('~cutoff_topic', '/ekg_filter_cutoff')  # New parameter
+        self.cutoff_topic = rospy.get_param('~cutoff_topic', '/ekg_filter_cutoff')
         self.cutoff_pub = rospy.Publisher(self.cutoff_topic, Float32, queue_size=10)
 
         rospy.loginfo("[GUI INIT] Subscribers set.")
@@ -59,7 +58,6 @@ class MedicalGUI(QObject):
         # Called from QML checkbox
         rospy.loginfo(f"GUI filter toggle: {'enabled' if enabled else 'disabled'}")
         self.filter_control_pub.publish(1.0 if enabled else 0.0)
-        # self.filter_control_pub.publish(0.0)
 
     @pyqtSlot(float)
     def update_cutoff(self, cutoff):

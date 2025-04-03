@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtCharts 2
+import QtQuick.Layouts 1.12
 
 ApplicationWindow {
     visible: true
@@ -11,78 +12,101 @@ ApplicationWindow {
     property int x: 0
     property int x_width: 200
 
-    Column {
-        anchors.centerIn: parent
+    GridLayout {
+        anchors.fill: parent
+        columns: 3
 
-        CheckBox {
-            id: filterEnabled
-            text: "Enable EKG Filter"
-            checked: false
-            onCheckedChanged: {
-                cutoffSlider.enabled = checked;
-                if (checked) {
-                    gui.update_cutoff(cutoffSlider.value);
-                } else {
-                    gui.update_cutoff(0.0); // Set cutoff to 0 to disable filter
-                }
+        // Column 1: Heart Rate and Blood Pressure
+        ColumnLayout {
+            Layout.column: 0
+            Layout.row: 0
+
+            Label {
+                id: heartRateLabel
+                text: "<b>Heart Rate:</b> -- bpm"
+                font.pointSize: 20
+            }
+
+            Label {
+                id: bloodPressureLabel
+                text: "<b>Blood Pressure:</b> -- mmHg"
+                font.pointSize: 20
             }
         }
 
-        Label {
-            id: cutoffLabel
-            text: "EKG Filter Cutoff Frequency: " + cutoffSlider.value.toFixed(2)
-            font.pointSize: 12
-        }
-
-        Row {
-            Button {
-                text: "-"
+        // Column 2: Checkbox
+        ColumnLayout {
+            Layout.column: 1
+            Layout.row: 0
+            CheckBox {
+                id: filterEnabled
+                text: "<b>Enable EKG Filter</b>"
                 font.pointSize: 20 // Increased font size
-                onClicked: {
-                    cutoffSlider.value = Math.max(cutoffSlider.from, cutoffSlider.value - cutoffSlider.stepSize);
-                    gui.update_cutoff(cutoffSlider.value);
-                }
-            }
-
-            Slider {
-                id: cutoffSlider
-                from: 0.0  // Minimum cutoff frequency (filter disabled)
-                to: 0.3     // Maximum cutoff frequency (filter enabled)
-                value: 0.1   // Default cutoff frequency (filter disabled)
-                stepSize: 0.01
-                enabled: filterEnabled.checked
-                onValueChanged: {
-                    gui.update_cutoff(value);
-                    cutoffLabel.text = "EKG Filter Cutoff Frequency: " + value.toFixed(2);
-                }
-            }
-
-            Button {
-                text: "+"
-                font.pointSize: 20 // Increased font size
-                onClicked: {
-                    cutoffSlider.value = Math.min(cutoffSlider.to, cutoffSlider.value + cutoffSlider.stepSize);
-                    gui.update_cutoff(cutoffSlider.value);
+                checked: false
+                onCheckedChanged: {
+                    cutoffSlider.enabled = checked;
+                    if (checked) {
+                        gui.update_cutoff(cutoffSlider.value);
+                    } else {
+                        gui.update_cutoff(0.0); // Set cutoff to 0 to disable filter
+                    }
                 }
             }
         }
-        
-        Label {
-            id: heartRateLabel
-            text: "Heart Rate: -- bpm"
-            font.pointSize: 20
+
+        // Column 3: Slider and Buttons
+        ColumnLayout {
+            Layout.column: 2
+            Layout.row: 0
+
+            Label {
+                id: cutoffLabel
+                text: "<b>EKG Filter Cutoff Frequency:</b> " + cutoffSlider.value.toFixed(2)
+                font.pointSize: 20
+            }
+
+            RowLayout {
+                Button {
+                    text: "-"
+                    font.pointSize: 25 // Increased font size
+                    onClicked: {
+                        cutoffSlider.value = Math.max(cutoffSlider.from, cutoffSlider.value - cutoffSlider.stepSize);
+                        gui.update_cutoff(cutoffSlider.value);
+                    }
+                }
+
+                Slider {
+                    id: cutoffSlider
+                    from: 0.0  // Minimum cutoff frequency (filter disabled)
+                    to: 0.3     // Maximum cutoff frequency (filter enabled)
+                    value: 0.1   // Default cutoff frequency (filter disabled)
+                    stepSize: 0.01
+                    enabled: filterEnabled.checked
+                    onValueChanged: {
+                        gui.update_cutoff(value);
+                        cutoffLabel.text = "<b>EKG Filter Cutoff Frequency:</b> " + value.toFixed(2);
+                    }
+                }
+
+                Button {
+                    text: "+"
+                    font.pointSize: 20 // Increased font size
+                    onClicked: {
+                        cutoffSlider.value = Math.min(cutoffSlider.to, cutoffSlider.value + cutoffSlider.stepSize);
+                        gui.update_cutoff(cutoffSlider.value);
+                    }
+                }
+            }
         }
 
-        Label {
-            id: bloodPressureLabel
-            text: "Blood Pressure: -- mmHg"
-            font.pointSize: 20
-        }
-
+        // ChartView (spans all columns)
         ChartView {
             id: chartView
-            width: parent.width
-            height: 600
+            Layout.row: 1
+            Layout.columnSpan: 3
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignTop
             antialiasing: true
 
             ValueAxis {
@@ -93,8 +117,8 @@ ApplicationWindow {
 
             ValueAxis {
                 id: axisY
-                min: 725
-                max: 820
+                min: 690
+                max: 930
             }
 
             LineSeries {
@@ -111,13 +135,13 @@ ApplicationWindow {
         target: gui
         
         onHeartRateChanged: function(heartRate) {
-            // console.log("[QML] Received Heart Rate:", heartRate)
-            heartRateLabel.text = "Heart Rate: " + heartRate + " bpm"
+            //console.log("[QML] Received Heart Rate:", heartRate)
+            heartRateLabel.text = "<b>Heart Rate:</b> <font color='red'>" + heartRate + "</font> bpm"
         }
 
         onBloodPressureChanged: function(bloodPressure) {
-            // console.log("[QML] Blood Pressure Changed:", bloodPressure)
-            bloodPressureLabel.text = "Blood Pressure: " + bloodPressure + " mmHg"
+            //console.log("[QML] Blood Pressure Changed:", bloodPressure)
+            bloodPressureLabel.text = "<b>Blood Pressure:</b> <font color='red'>" + bloodPressure + "</font> mmHg"
         }
 
         onEkgChanged: function(voltage) {
@@ -132,5 +156,6 @@ ApplicationWindow {
 
     Component.onCompleted: {
         console.log("gui object in QML is", gui)
+         chartView.legend.font.pointSize = 16;
     }
 }
