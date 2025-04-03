@@ -1,6 +1,5 @@
 import sys
-# import threading
-from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, QUrl, QTimer
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, QUrl
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtQml import QQmlApplicationEngine
 import rospy
@@ -70,9 +69,6 @@ class MedicalGUI(QObject):
 
 if __name__ == "__main__":
     try:
-        # rospy.init_node('medical_gui', anonymous=True, log_level=rospy.DEBUG)
-        # rospy.loginfo("[ROS] Node initialized successfully.")
-
         app = QApplication(sys.argv)
         engine = QQmlApplicationEngine()
 
@@ -88,16 +84,6 @@ if __name__ == "__main__":
         if not engine.rootObjects():
             rospy.logerr("[QML] No root objects found. Exiting.")
             sys.exit(-1)
-
-        # Add a timer to keep the event loop alive and log periodically
-        # timer = QTimer()
-        # timer.timeout.connect(lambda: rospy.loginfo("[Debug] Timer running."))
-        # timer.start(1000)
-
-        # rospy.loginfo("[ROS] Starting rospy.spin() in a separate thread.")
-        # threading.Thread(target=rospy.spin, daemon=True).start()
-
-        QTimer.singleShot(2000, lambda: gui.heartRateChanged.emit("123"))
 
         rospy.loginfo("[GUI] Starting PyQt application event loop.")
         sys.exit(app.exec_())
