@@ -24,8 +24,8 @@ class MedicalGUI(QObject):
         # rospy.Subscriber('/ekg', Float32, self.update_ekg)
         rospy.Subscriber('/ekg_filtered', Float32, self.update_ekg)
 
-        self.filter_control_pub = rospy.Publisher('/ekg_filter_enable', Float32, queue_size=10)
-        self.cutoff_pub = rospy.Publisher('/ekg_filter_cutoff', Float32, queue_size=10)  # New publisher
+        self.cutoff_topic = rospy.get_param('~cutoff_topic', '/ekg_filter_cutoff')  # New parameter
+        self.cutoff_pub = rospy.Publisher(self.cutoff_topic, Float32, queue_size=10)
 
         rospy.loginfo("[GUI INIT] Subscribers set.")
 
