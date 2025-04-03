@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y \
     qml-module-qtquick-controls2 \
     qml-module-qtcharts \
     qml-module-qtquick2 \
+    ros-noetic-rqt-graph \
     && rm -rf /var/lib/apt/lists/*
 
 # Install sip before installing PyQt5
