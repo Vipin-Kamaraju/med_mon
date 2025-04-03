@@ -36,5 +36,6 @@ class EKGFilterNode:
 if __name__ == "__main__":
     try:
         EKGFilterNode()
+        rospy.spin()
     except rospy.ROSInterruptException:
         pass
