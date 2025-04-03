@@ -25,6 +25,7 @@ class MedicalGUI(QObject):
         rospy.Subscriber('/ekg_filtered', Float32, self.update_ekg)
 
         self.filter_control_pub = rospy.Publisher('/ekg_filter_enable', Float32, queue_size=10)
+        self.cutoff_pub = rospy.Publisher('/ekg_filter_cutoff', Float32, queue_size=10)  # New publisher
 
         rospy.loginfo("[GUI INIT] Subscribers set.")
 
@@ -59,6 +60,12 @@ class MedicalGUI(QObject):
         rospy.loginfo(f"GUI filter toggle: {'enabled' if enabled else 'disabled'}")
         self.filter_control_pub.publish(1.0 if enabled else 0.0)
         # self.filter_control_pub.publish(0.0)
+
+    @pyqtSlot(float)
+    def update_cutoff(self, cutoff):
+        # Called from QML slider
+        rospy.loginfo(f"GUI filter cutoff: {cutoff}")
+        self.cutoff_pub.publish(float(cutoff))
 
 if __name__ == "__main__":
     try:

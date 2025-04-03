@@ -14,12 +14,21 @@ ApplicationWindow {
     Column {
         anchors.centerIn: parent
 
-        CheckBox {
-            id: filterToggle
-            text: "Enable EKG Filter"
-            checked: false
-            onCheckedChanged: {
-                gui.toggle_filter(checked)
+        Label {
+            id: cutoffLabel
+            text: "EKG Filter Cutoff Frequency: " + cutoffSlider.value.toFixed(2)
+            font.pointSize: 12
+        }
+
+        Slider {
+            id: cutoffSlider
+            from: 0.0  // Minimum cutoff frequency (filter disabled)
+            to: 0.5     // Maximum cutoff frequency (filter enabled)
+            value: 0.25   // Default cutoff frequency (filter disabled)
+            stepSize: 0.01
+            onValueChanged: {
+                gui.update_cutoff(value);
+                cutoffLabel.text = "EKG Filter Cutoff Frequency: " + value.toFixed(2);
             }
         }
         

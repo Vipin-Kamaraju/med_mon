@@ -8,18 +8,28 @@ class EKGFilterNode:
         rospy.init_node('ekg_filter_node')
 
         # Filter settings
-        self.enabled = True
-        self.b, self.a = butter(N=2, Wn=0.1, btype='low')
+        self.cutoff = 0.0  # Default cutoff frequency (filter disabled)
+        self.enabled = False  # Filter is initially disabled
+        self.update_filter()
 
         self.filtered_pub = rospy.Publisher('/ekg_filtered', Float32, queue_size=10)
-        self.ctrl_sub = rospy.Subscriber('/ekg_filter_enable', Float32, self.toggle_filter)
+        self.cutoff_sub = rospy.Subscriber('/ekg_filter_cutoff', Float32, self.update_cutoff)  # New subscriber
         self.ekg_sub = rospy.Subscriber('/ekg', Float32, self.filter_callback)
 
         self.prev_data = []
 
-    def toggle_filter(self, msg):
-        self.enabled = bool(msg.data)
-        rospy.loginfo(f"Filtering {'enabled' if self.enabled else 'disabled'}")
+    def update_filter(self):
+        if self.cutoff > 0.0:
+            self.enabled = True
+            self.b, self.a = butter(N=2, Wn=self.cutoff, btype='low')
+            rospy.loginfo(f"Filter enabled with cutoff: {self.cutoff}")
+        else:
+            self.enabled = False
+            rospy.loginfo("Filter disabled")
+
+    def update_cutoff(self, msg):
+        self.cutoff = msg.data
+        self.update_filter()
 
     def filter_callback(self, msg):
         if not self.enabled:
