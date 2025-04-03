@@ -7,8 +7,8 @@ import rospy
 from std_msgs.msg import Int32, Float32
 
 class MedicalGUI(QObject):
-    heartRateChanged = pyqtSignal(int)
-    bloodPressureChanged = pyqtSignal(float)
+    heartRateChanged = pyqtSignal(str)
+    bloodPressureChanged = pyqtSignal(str)
     ekgChanged = pyqtSignal(float)
 
     def __init__(self):
@@ -38,13 +38,13 @@ class MedicalGUI(QObject):
     def update_heart_rate(self, msg):
         # rospy.loginfo(f"[Python] Heart Rate Callback triggered with value: {msg.data}")
         # self.heartRateChanged.connect(lambda value: rospy.loginfo(f"[Debug] Heart Rate Signal Emitted: {value}"))
-        self.heartRateChanged.emit(msg.data)
+        self.heartRateChanged.emit(str(msg.data))
 
     @pyqtSlot(Float32)
     def update_blood_pressure(self, msg):
         # rospy.loginfo(f"[Python] Blood Pressure Callback triggered with value: {msg.data}")
         # self.bloodPressureChanged.connect(lambda value: rospy.loginfo(f"[Debug] Blood Pressure Signal Emitted: {value}"))
-        self.bloodPressureChanged.emit(msg.data)
+        self.bloodPressureChanged.emit(str(msg.data))
 
     @pyqtSlot(Float32)
     def update_ekg(self, msg):
