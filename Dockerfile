@@ -37,5 +37,7 @@ ENTRYPOINT ["/setup/entrypoint.sh"]
 
 WORKDIR /med_mon
 
+RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc
+
 #CMD ["bash"]
 CMD ["/bin/bash", "-c", "roslaunch launch_files med_mon.launch"]
