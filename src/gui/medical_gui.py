@@ -46,7 +46,8 @@ class MedicalGUI(QObject):
     def update_blood_pressure(self, msg):
         # rospy.loginfo(f"[Python] Blood Pressure Callback triggered with value: {msg.data}")
         # self.bloodPressureChanged.connect(lambda value: rospy.loginfo(f"[Debug] Blood Pressure Signal Emitted: {value}"))
-        self.bloodPressureChanged.emit(str(msg.data))
+        blood_pressure = int(round(msg.data))  # Round to nearest integer
+        self.bloodPressureChanged.emit(str(blood_pressure))
 
     @pyqtSlot(Float32)
     def update_ekg(self, msg):
