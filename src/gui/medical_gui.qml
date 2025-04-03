@@ -14,6 +14,15 @@ ApplicationWindow {
     Column {
         anchors.centerIn: parent
 
+        CheckBox {
+            id: filterToggle
+            text: "Enable EKG Filter"
+            checked: true
+            onCheckedChanged: {
+                gui.toggle_filter(checked)
+            }
+        }
+        
         Label {
             id: heartRateLabel
             text: "Heart Rate: -- bpm"

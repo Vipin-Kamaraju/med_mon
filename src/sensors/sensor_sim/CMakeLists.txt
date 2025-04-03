@@ -15,5 +15,6 @@ include_directories(
 catkin_install_python(PROGRAMS
   medical_sensor.py
   ekg.py
+  ekg_filter.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

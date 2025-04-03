@@ -21,10 +21,10 @@ class MedicalGUI(QObject):
         rospy.loginfo("[ROS] Subscriber for /heart_rate created.")
         rospy.Subscriber('/blood_pressure', Float32, self.update_blood_pressure)
         rospy.loginfo("[ROS] Subscriber for /blood_pressure created.")
-        rospy.Subscriber('/ekg', Float32, self.update_ekg)
-        # rospy.Subscriber('/ekg_filtered', Float32, self.update_ekg)
+        # rospy.Subscriber('/ekg', Float32, self.update_ekg)
+        rospy.Subscriber('/ekg_filtered', Float32, self.update_ekg)
 
-        # self.filter_control_pub = rospy.Publisher('/ekg_filter_enable', Float32, queue_size=10)
+        self.filter_control_pub = rospy.Publisher('/ekg_filter_enable', Float32, queue_size=10)
 
         rospy.loginfo("[GUI INIT] Subscribers set.")
 
@@ -52,6 +52,12 @@ class MedicalGUI(QObject):
         # rospy.loginfo(f"[Python] EKG Callback triggered with value: {msg.data}")
         # self.ekgChanged.connect(lambda value: rospy.loginfo(f"[Debug] EKG Signal Emitted: {value}"))
         self.ekgChanged.emit(float(msg.data))
+
+    @pyqtSlot(bool)
+    def toggle_filter(self, enabled):
+        # Called from QML checkbox
+        rospy.loginfo(f"GUI filter toggle: {'enabled' if enabled else 'disabled'}")
+        self.filter_control_pub.publish(1.0 if enabled else 0.0)
 
 if __name__ == "__main__":
     try:

@@ -1,5 +1,6 @@
 <launch>
     <node pkg="sensor_sim" type="medical_sensor.py" name="med_mon_sensors"/>
     <node pkg="sensor_sim" type="ekg.py" name="ekg_sim"/>
+    <node pkg="sensor_sim" type="ekg_filter.py" name="ekg_filter_node"/>
     <node pkg="gui" type="medical_gui.py" name="med_mon_gui"/>
 </launch>
