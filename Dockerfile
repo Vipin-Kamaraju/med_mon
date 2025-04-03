@@ -33,6 +33,10 @@ COPY ./entrypoint.sh /setup
 RUN chmod +x /setup/entrypoint.sh
 RUN chown root:root /setup/entrypoint.sh
 
+COPY ./launch.sh /setup
+RUN chmod +x /setup/launch.sh
+RUN chown root:root /setup/launch.sh
+
 # Set the entrypoint to the correct path
 ENTRYPOINT ["/setup/entrypoint.sh"]
 
@@ -40,5 +44,5 @@ WORKDIR /med_mon
 
 RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc
 
-#CMD ["bash"]
-CMD ["/bin/bash", "-c", "roslaunch launch_files med_mon.launch"]
+CMD ["bash"]
+

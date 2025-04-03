@@ -82,6 +82,8 @@ if __name__ == "__main__":
         # rospy.loginfo("[ROS] Starting rospy.spin() in a separate thread.")
         # threading.Thread(target=rospy.spin, daemon=True).start()
 
+        QTimer.singleShot(2000, lambda: gui.heartRateChanged.emit("123"))
+
         rospy.loginfo("[GUI] Starting PyQt application event loop.")
         sys.exit(app.exec_())
     except Exception as e:

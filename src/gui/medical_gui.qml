@@ -56,16 +56,18 @@ ApplicationWindow {
 
     Connections {
         target: gui
-        function onHeartRateChanged(heartRate) {
-            logger("Heart Rate Changed: " + heartRate);
-            heartRateLabel.text = "Heart Rate: " + heartRate + " bpm";
+        
+        onHeartRateChanged: function(heartRate) {
+            console.log("[QML] Received Heart Rate:", heartRate)
+            heartRateLabel.text = "Heart Rate: " + heartRate + " bpm"
         }
-        function onBloodPressureChanged(bloodPressure) {
-            logger("Blood Pressure Changed: " + bloodPressure);
-            bloodPressureLabel.text = "Blood Pressure: " + bloodPressure + " mmHg";
+
+        onBloodPressureChanged: function(bloodPressure) {
+            console.log("[QML] Blood Pressure Changed:", bloodPressure)
+            bloodPressureLabel.text = "Blood Pressure: " + bloodPressure + " mmHg"
         }
-        function onEkgChanged(voltage) {
-            logger("EKG Voltage Changed: " + voltage);
+
+        onEkgChanged: function(voltage) {
             ekgSeries.append(x, voltage);
             x = (x + 1) % x_width;
 
@@ -73,5 +75,9 @@ ApplicationWindow {
                 ekgSeries.remove(0);
             }
         }
+    }
+
+    Component.onCompleted: {
+        console.log("gui object in QML is", gui)
     }
 }
