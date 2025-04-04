@@ -8,5 +8,7 @@
         <param name="cutoff_frequency" value="0.0"/>
         <param name="cutoff_topic" value="/ekg_filter_cutoff"/>
     </node>
-    <node pkg="gui" type="medical_gui.py" name="med_mon_gui"/>
+    <node pkg="gui" type="medical_gui.py" name="med_mon_gui">
+        <param name="debug_logging" value="false"/> 
+    </node>
 </launch>

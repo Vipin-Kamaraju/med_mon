@@ -14,6 +14,9 @@ class MedicalGUI(QObject):
         super().__init__()
         rospy.init_node('medical_gui', anonymous=True)
 
+        # Get ROS parameter for debug logging
+        self.debug_logging = rospy.get_param('~debug_logging', False)
+
         rospy.loginfo("[GUI INIT] Setting up ROS subscribers...")
 
         rospy.Subscriber('/heart_rate', Int32, self.update_heart_rate)
@@ -36,21 +39,24 @@ class MedicalGUI(QObject):
 
     @pyqtSlot(Int32)
     def update_heart_rate(self, msg):
-        # rospy.loginfo(f"[Python] Heart Rate Callback triggered with value: {msg.data}")
-        # self.heartRateChanged.connect(lambda value: rospy.loginfo(f"[Debug] Heart Rate Signal Emitted: {value}"))
+        if self.debug_logging:
+            rospy.logdebug(f"[Python] Heart Rate Callback triggered with value: {msg.data}")
+            self.heartRateChanged.connect(lambda value: rospy.loginfo(f"[Debug] Heart Rate Signal Emitted: {value}"))
         self.heartRateChanged.emit(str(msg.data))
 
     @pyqtSlot(Float32)
     def update_blood_pressure(self, msg):
-        # rospy.loginfo(f"[Python] Blood Pressure Callback triggered with value: {msg.data}")
-        # self.bloodPressureChanged.connect(lambda value: rospy.loginfo(f"[Debug] Blood Pressure Signal Emitted: {value}"))
+        if self.debug_logging:
+            rospy.logdebug(f"[Python] Blood Pressure Callback triggered with value: {msg.data}")
+            self.bloodPressureChanged.connect(lambda value: rospy.loginfo(f"[Debug] Blood Pressure Signal Emitted: {value}"))
         blood_pressure = int(round(msg.data))  # Round to nearest integer
         self.bloodPressureChanged.emit(str(blood_pressure))
 
     @pyqtSlot(Float32)
     def update_ekg(self, msg):
-        # rospy.loginfo(f"[Python] EKG Callback triggered with value: {msg.data}")
-        # self.ekgChanged.connect(lambda value: rospy.loginfo(f"[Debug] EKG Signal Emitted: {value}"))
+        if self.debug_logging:
+            rospy.logdebug(f"[Python] EKG Callback triggered with value: {msg.data}")
+            self.ekgChanged.connect(lambda value: rospy.loginfo(f"[Debug] EKG Signal Emitted: {value}"))
         self.ekgChanged.emit(float(msg.data))
 
     @pyqtSlot(bool)
@@ -58,7 +64,7 @@ class MedicalGUI(QObject):
         # Called from QML checkbox
         rospy.loginfo(f"GUI filter toggle: {'enabled' if enabled else 'disabled'}")
         self.filter_control_pub.publish(1.0 if enabled else 0.0)
-
+        
     @pyqtSlot(float)
     def update_cutoff(self, cutoff):
         # Called from QML slider
