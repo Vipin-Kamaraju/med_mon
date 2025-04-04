@@ -1,1 +1,0 @@
-CMD ["/bin/bash", "-c", "roslaunch launch_files med_mon.launch"]
